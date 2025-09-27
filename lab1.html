@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>document</title>
+</head>
+<body>
+  <p id="number">0</p>
+  <button onclick="start()">시작</button>
+  <button onclick="stop()">중지</button>
+
+  <script>
+    let n = 0;         
+    let timer = null;  
+
+    function start() {
+      if (timer) return; 
+      timer = setInterval(() => {
+        n++;
+        document.getElementById("number").textContent = n;
+      }, 1000);
+    }
+
+    function stop() {
+      clearInterval(timer);
+      timer = null;
+    }
+  </script>
+</body>
+</html>

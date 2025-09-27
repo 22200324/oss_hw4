@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS AJAX </title>
+</head>
+<body>
+  <h1>학생 관리</h1>
+
+  <button id="btnRead">조회(Read)</button>
+  <ul id="list"></ul>
+
+  <h3>추가(Create)</h3>
+  <input id="name" placeholder="이름">
+  <input id="age" type="number" placeholder="나이">
+  <input id="major" placeholder="전공">
+  <button id="btnCreate">추가</button>
+
+  <h3>수정(Update) / 삭제(Delete)</h3>
+  <input id="id" type="number" placeholder="id">
+  <button id="btnUpdate">수정</button>
+  <button id="btnDelete">삭제</button>
+
+  <script>
+    const BASE = "http://localhost:3001/students";
+
+    
+    function render(items) {
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+      items.forEach(s => {
+        const li = document.createElement("li");
+        li.textContent = s.id + ". " + s.name + " (" + s.age + ") - " + s.major;
+        list.appendChild(li);
+      });
+    }
+
+    
+    function read() {
+      fetch(BASE)
+        .then(res => res.json())
+        .then(data => render(data));
+    }
+
+   
+    function create() {
+      const body = {
+        name:  document.getElementById("name").value,
+        age:   Number(document.getElementById("age").value),
+        major: document.getElementById("major").value
+      };
+
+      fetch(BASE, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      })
+      .then(() => read());
+    }
+
+    
+    function update() {
+      const id = document.getElementById("id").value;
+      if (!id) { alert("id 입력 필요"); return; }
+
+      const body = {
+        name:  document.getElementById("name").value,
+        age:   Number(document.getElementById("age").value),
+        major: document.getElementById("major").value
+      };
+
+      fetch(BASE + "/" + id, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      })
+      .then(() => read());
+    }
+
+    
+    function remove() {
+      const id = document.getElementById("id").value;
+      if (!id) { alert("id 입력 필요"); return; }
+
+      fetch(BASE + "/" + id, { method: "DELETE" })
+        .then(() => read());
+    }
+
+    
+    document.getElementById("btnRead").addEventListener("click", read);
+    document.getElementById("btnCreate").addEventListener("click", create);
+    document.getElementById("btnUpdate").addEventListener("click", update);
+    document.getElementById("btnDelete").addEventListener("click", remove);
+
+    
+    read();
+  </script>
+</body>
+</html>
